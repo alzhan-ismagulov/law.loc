@@ -9,8 +9,7 @@
         </div>
     @endif
 
-    <button onclick="window.location.href='{{ route('admin.posts.create') }}'" class="nova-input" style="background-color: #3b82f6; color: #ffffff; cursor: pointer; margin-bottom: 15px; padding: 8px 20px; border: none; border-radius: 4px; font-size: 14px;">Добавить пост</button>
-    
+    <button onclick="window.location.href='{{ route('admin.posts.create') }}'" class="nova-input" style="background-color: #3b82f6; color: #ffffff; cursor: pointer; margin-bottom: 10px; padding: 5px 20px; border: none; border-radius: 4px;">Добавить пост</button>
     <div class="table-header" style="margin-bottom: 15px; font-size: 16px; font-weight: 600; color: #0f172a;">Список постов</div>
 
     <!-- Контейнер с прокруткой для мобильных -->
