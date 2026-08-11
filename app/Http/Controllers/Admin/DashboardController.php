@@ -22,6 +22,6 @@ class DashboardController extends Controller
             ['id' => 3, 'title' => 'налоговый аудит и консультация', 'client' => 'ип беков т.', 'status' => 'ожидание', 'date' => '2026-06-04'],
         ];
 
-        return view('admin.dashboard.admin-dashboard', compact('metrics', 'recentCases'));
+        return view('admin.admin-dashboard', compact('metrics', 'recentCases'));
     }
 }

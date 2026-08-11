@@ -5,10 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zanger CRM - Панель управления</title>
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+    <style>
+    /* Увеличиваем высоту рабочей области CKEditor 5 в два раза */
+    .ck-editor__editable {
+        min-height: 300px !important;
+    }
+</style>
 </head>
 <body>
     <div class="nova-layout">
-        <aside class="nova-sidebar">
+        <aside class="nova-sidebar" id="novaSidebar">
             <div class="sidebar-brand">
                 <a href="{{ route('admin.dashboard') }}" class="brand-link">Zanger CRM</a>
             </div>
@@ -23,10 +30,10 @@
                 <a href="{{ route('admin.tags.index') }}" class="nav-link">
                     <span class="nav-icon">&#9632;</span> Теги
                 </a>
-                <a href="#" class="nav-link">
+                <a href="{{ route('admin.posts.index') }}" class="nav-link">
                     <span class="nav-icon">&#9632;</span> Посты
                 </a>
-                <a href="#" class="nav-link">
+                <a href="{{ route('admin.clients.index') }}" class="nav-link">
                     <span class="nav-icon">&#9632;</span> Клиенты
                 </a>
                 <a href="#" class="nav-link">
@@ -42,7 +49,7 @@
 
             <div class="sidebar-footer">
                 <div class="sidebar-footer-title">Справочники</div>
-                <a href="#" class="nav-link footer-link">
+                <a href="{{ route('admin.regions.index') }}" class="nav-link footer-link">
                     <span class="nav-icon">&#9632;</span> Регионы
                 </a>
                 <a href="#" class="nav-link footer-link">
@@ -53,7 +60,8 @@
 
         <main class="nova-main">
             <header class="nova-header">
-                <div class="header-left">
+                <div class="header-left" style="display: flex; align-items: center;">
+                    <button type="button" class="nova-mobile-toggle" id-toggle="novaSidebar" onclick="toggleSidebar()">&#9776;</button>
                     <a href="{{ route('admin.dashboard') }}" class="header-dashboard-link">Панель управления</a>
                 </div>
 
@@ -81,5 +89,12 @@
             </footer>
         </main>
     </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('novaSidebar');
+            sidebar.classList.toggle('open');
+        }
+    </script>
 </body>
 </html>

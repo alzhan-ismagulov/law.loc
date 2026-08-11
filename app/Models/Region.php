@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Region extends Model
 {
     protected $fillable = [
-        'name',
+        'title',
         'slug',
-        'description',
     ];
+
+    public $timestamps = false; // Отключаем автоматическое заполнение created_at и updated_at
     
     public function employees()
     {
