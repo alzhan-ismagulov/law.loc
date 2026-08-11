@@ -3,40 +3,40 @@
 @section('content')
 <div class="dashboard-container">
 
-    <!-- Карточки метрик -->
+    <!-- Карточки метрик (в стиле Nova Cards) -->
     <div class="metrics-grid">
         <div class="metric-card">
-            <div class="metric-title">Всего клиентов</div>
+            <div class="metric-title">всего клиентов</div>
             <div class="metric-value">{{ $metrics['total_clients'] }}</div>
         </div>
 
         <div class="metric-card">
-            <div class="metric-title">Активные дела</div>
+            <div class="metric-title">активные дела</div>
             <div class="metric-value">{{ $metrics['active_cases'] }}</div>
         </div>
 
         <div class="metric-card">
-            <div class="metric-title">Завершенные задачи</div>
+            <div class="metric-title">завершенные задачи</div>
             <div class="metric-value">{{ $metrics['completed_tasks'] }}</div>
         </div>
 
         <div class="metric-card">
-            <div class="metric-title">Общий оборот</div>
+            <div class="metric-title">общий оборот</div>
             <div class="metric-value">{{ $metrics['revenue'] }}</div>
         </div>
     </div>
 
-    <!-- Таблица последних записей -->
+    <!-- Таблица последних записей (в стиле Nova Resource Index) -->
     <div class="nova-card-table">
-        <div class="table-header">Последние судебные и юридические дела</div>
+        <div class="table-header">последние судебные и юридические дела</div>
         <table class="nova-table">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Название дела</th>
-                    <th>Клиент</th>
-                    <th>Статус</th>
-                    <th>Дата</th>
+                    <th>id</th>
+                    <th>название дела</th>
+                    <th>клиент</th>
+                    <th>статус</th>
+                    <th>дата</th>
                 </tr>
             </thead>
             <tbody>

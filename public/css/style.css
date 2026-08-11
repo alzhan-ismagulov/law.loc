@@ -16,6 +16,17 @@ body {
     min-height: 100vh;
 }
 
+.nova-input {
+    padding: 8px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    outline: none;
+    background-color: #ffffff;
+    font-weight: normal;
+    font-style: normal;
+    text-transform: none;
+}
+
 .nova-sidebar {
     width: 240px;
     background-color: #1e293b;

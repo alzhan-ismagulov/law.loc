@@ -10,12 +10,21 @@
     <div class="nova-layout">
         <aside class="nova-sidebar">
             <div class="sidebar-brand">
-                <a href="{{ route('dashboard') }}" class="brand-link">Zanger CRM</a>
+                <a href="{{ route('admin.dashboard') }}" class="brand-link">Zanger CRM</a>
             </div>
             
             <nav class="sidebar-nav">
-                <a href="{{ route('dashboard') }}" class="nav-link">
+                <a href="{{ route('admin.dashboard') }}" class="nav-link">
                     <span class="nav-icon">&#9632;</span> Главная
+                </a>
+                <a href="{{ route('admin.categories.index') }}" class="nav-link">
+                    <span class="nav-icon">&#9632;</span> Категории
+                </a>
+                <a href="{{ route('admin.tags.index') }}" class="nav-link">
+                    <span class="nav-icon">&#9632;</span> Теги
+                </a>
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">&#9632;</span> Посты
                 </a>
                 <a href="#" class="nav-link">
                     <span class="nav-icon">&#9632;</span> Клиенты
@@ -45,7 +54,7 @@
         <main class="nova-main">
             <header class="nova-header">
                 <div class="header-left">
-                    <a href="{{ route('dashboard') }}" class="header-dashboard-link">Панель управления</a>
+                    <a href="{{ route('admin.dashboard') }}" class="header-dashboard-link">Панель управления</a>
                 </div>
 
                 <div class="header-search">
