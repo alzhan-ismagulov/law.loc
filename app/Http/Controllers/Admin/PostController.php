@@ -39,6 +39,9 @@ class PostController extends Controller
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tags,id',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'slug' => 'nullable|string|max:255|unique:posts,slug',
+            'views' => 'nullable|integer|min:0',
+            'thumbnail_original_name' => 'nullable|string|max:255',
         ]);
 
         try {
