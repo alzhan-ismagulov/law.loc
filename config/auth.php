@@ -47,6 +47,11 @@ return [
             'driver' => 'session',
             'provider' => 'translators',
         ],
+
+        'client' => [
+            'driver' => 'session',
+            'provider' => 'clients',
+        ],
     ],
 
     /*
@@ -75,6 +80,11 @@ return [
         'translators' => [
             'driver' => 'eloquent',
             'model' => App\Models\Translator::class,
+        ],
+
+        'clients' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Client::class,
         ],
 
         // 'users' => [

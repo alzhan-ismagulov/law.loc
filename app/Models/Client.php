@@ -3,39 +3,47 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class Client extends Model
+class Client extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
+
+    protected $table = 'clients';
 
     protected $fillable = [
         'type',
         'name',
-        'iin_bin',
+        'bin_iin',
+        'country',
+        'region_id',
+        'city',
+        'address',
+        'contact_person',
+        'position',
         'phone',
         'email',
-        'birth_date',
-        'address',
-        'id_card_number',
-        'id_card_date',
-        'id_card_issuer',
-        'tenant_id',
-        'region_id',
+        'password',
+        'source',
+        'status',
+        'discount_percent',
+        'bank_name',
+        'iban',
+        'internal_notes',
     ];
 
-    public function tenant()
-    {
-        return $this->belongsTo(Tenant::class);
-    }
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected $casts = [
+        'discount_percent' => 'decimal:2',
+    ];
 
     public function region()
     {
         return $this->belongsTo(Region::class);
-    }
-
-    public function cases()
-    {
-        return $this->hasMany(LegalCase::class); // Связь с судебными делами клиента
     }
 }

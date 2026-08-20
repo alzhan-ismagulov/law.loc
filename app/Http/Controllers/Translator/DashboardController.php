@@ -57,4 +57,31 @@ class DashboardController extends Controller
 
         return back()->with('success', 'Ваш тариф успешно обновлен.');
     }
+
+    public function updateProfile(Request $request)
+    {
+        $translator = Auth::guard('translator')->user();
+
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:50',
+            'country' => 'nullable|string|max:100',
+            'city' => 'nullable|string|max:100',
+            'bank_name' => 'nullable|string|max:255',
+            'iban' => 'nullable|string|max:255',
+            'card_number' => 'nullable|string|max:255',
+            'card_type' => 'nullable|string|max:50',
+            'password' => 'nullable|string|min:6|confirmed',
+        ]);
+
+        if (!empty($data['password'])) {
+            $data['password'] = \Illuminate\Support\Facades\Hash::make($data['password']);
+        } else {
+            unset($data['password']);
+        }
+
+        $translator->update($data);
+
+        return back()->with('success', 'Профиль успешно обновлен.');
+    }
 }

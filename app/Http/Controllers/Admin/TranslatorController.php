@@ -121,7 +121,7 @@ class TranslatorController extends Controller
         return view('admin.translators.edit', compact('translator', 'regions', 'countries', 'languages', 'currencies'));
     }
 
-    public function update(Request $request, Translator $translator)
+   public function update(Request $request, Translator $translator)
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
@@ -140,15 +140,18 @@ class TranslatorController extends Controller
             'internal_notes' => 'nullable|string',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'diploma' => 'nullable|file|mimes:pdf,jpg,png|max:5120',
+            'password' => 'nullable|string|min:6',
             'existing_pairs' => 'nullable|array',
             'pairs' => 'nullable|array',
         ]);
 
         DB::transaction(function () use ($request, $translator) {
-            $data = $request->except(['photo', 'diploma', 'existing_pairs', 'pairs', 'password']);
+            $data = $request->except(['photo', 'diploma', 'existing_pairs', 'pairs']);
             
             if ($request->filled('password')) {
                 $data['password'] = Hash::make($request->password);
+            } else {
+                unset($data['password']);
             }
 
             if ($request->hasFile('photo')) {

@@ -5,11 +5,12 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\TaskController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\PostController;
-// use App\Http\Controllers\Admin\ClientController;
+use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\RegionController;
 use App\Http\Controllers\Admin\LanguageController;
 use App\Http\Controllers\Admin\TranslatorController;
 use App\Http\Controllers\Translator\DashboardController as TranslatorDashboardController;
+use App\Http\Controllers\Client\DashboardController as ClientDashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\UserDashboardController;
@@ -36,13 +37,23 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Маршруты дашборда переводчика
 Route::prefix('translator')->name('translator.')->middleware(['auth:translator'])->group(function () {
-   Route::get('/dashboard', [TranslatorDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [TranslatorDashboardController::class, 'index'])->name('dashboard');
     Route::get('/orders', [TranslatorDashboardController::class, 'orders'])->name('orders');
     Route::get('/prices', [TranslatorDashboardController::class, 'prices'])->name('prices');
     Route::put('/prices/{pair}', [TranslatorDashboardController::class, 'updatePrice'])->name('prices.update');
     Route::get('/profile', [TranslatorDashboardController::class, 'profile'])->name('profile');
+    Route::put('/profile', [TranslatorDashboardController::class, 'updateProfile'])->name('profile.update');
 });
 
+// Маршруты кабинета клиента
+Route::prefix('client')->name('client.')->middleware(['auth:client'])->group(function () {
+    Route::get('/dashboard', [ClientDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/orders', [ClientDashboardController::class, 'orders'])->name('orders');
+    Route::get('/profile', [ClientDashboardController::class, 'profile'])->name('profile');
+    Route::put('/profile', [ClientDashboardController::class, 'updateProfile'])->name('profile.update');
+});
+
+// Маршруты администратора / юриста
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin,lawyer'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -51,7 +62,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin,lawyer']
     Route::resource('tags', TagController::class);
     Route::resource('posts', PostController::class);
     Route::post('/posts/upload-image', [PostController::class, 'uploadImage'])->name('posts.upload-image');
-    // Route::resource('clients', ClientController::class);
+    
     Route::resource('regions', RegionController::class);
     Route::resource('languages', LanguageController::class);
 
@@ -59,4 +70,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin,lawyer']
     Route::resource('translators', TranslatorController::class);
     Route::post('translators/{translator}/add-pair', [TranslatorController::class, 'addLanguagePair'])->name('translators.add-pair');
     Route::post('translators/pair/{pair}/update-price', [TranslatorController::class, 'updatePrice'])->name('translators.update-price');
+
+    // Управление клиентами
+    Route::resource('clients', ClientController::class);
 });

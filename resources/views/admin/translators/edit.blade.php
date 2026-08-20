@@ -90,6 +90,11 @@
                         <option value="active" {{ old('status', $translator->status) == 'active' ? 'selected' : '' }}>Работает</option>
                         <option value="inactive" {{ old('status', $translator->status) == 'inactive' ? 'selected' : '' }}>Не работает</option>
                     </select>
+
+                    <div style="margin-bottom: 15px;">
+    <label style="display: block; color: #64748b; margin-bottom: 5px;">Новый пароль (заполните только если хотите сменить)</label>
+    <input type="password" name="password" class="nova-input" style="width: 100%; padding: 8px;">
+</div>
                 </div>
             </div>
         </div>

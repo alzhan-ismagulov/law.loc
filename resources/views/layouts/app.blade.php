@@ -28,7 +28,7 @@
                 </a>
 
                 <div class="sidebar-footer-title" style="padding-top: 15px;">СПРАВОЧНИКИ</div>
-                <a href="#" class="nav-link" style="margin-top: 10px;">
+               <a href="{{ route('admin.clients.index') }}" class="nav-link">
                     <span class="nav-icon">&#9632;</span> Клиенты
                 </a>
                 
