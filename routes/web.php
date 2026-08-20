@@ -5,16 +5,23 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\TaskController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\PostController;
-use App\Http\Controllers\Admin\ClientController;
+// use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\RegionController;
 use App\Http\Controllers\Admin\LanguageController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\UserDashboardController;
+use App\Http\Controllers\Auth\VerificationController;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/verify', [VerificationController::class, 'notice'])->name('verification.notice');
+Route::post('/verify', [VerificationController::class, 'verify'])->name('verification.verify');
+
+Route::get('/signup', [AuthController::class, 'showRegisterForm'])->name('register.form');
+Route::post('/signup', [AuthController::class, 'register'])->name('register');
 
 Route::get('/dashboard', [UserDashboardController::class, 'index'])
     ->name('user.dashboard')
@@ -33,7 +40,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:superadmin,law
     Route::resource('tags', TagController::class);
     Route::resource('posts', PostController::class);
     Route::post('/posts/upload-image', [PostController::class, 'uploadImage'])->name('posts.upload-image');
-    Route::resource('clients', ClientController::class);
+    // Route::resource('clients', ClientController::class);
     Route::resource('regions', RegionController::class);
     Route::resource('languages', LanguageController::class);
 });

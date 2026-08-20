@@ -40,4 +40,41 @@ class AuthController extends Controller
 
         return redirect('/login');
     }
+
+    public function showRegisterForm()
+    {
+        return view('auth.signup');
+    }
+
+    public function register(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
+        ]);
+
+        $code = random_int(100000, 999999);
+
+        $user = \App\Models\User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => \Illuminate\Support\Facades\Hash::make($validated['password']),
+            'verification_code' => $code,
+        ]);
+        
+
+        // Присваиваем роль обычного пользователя (user)
+        $userRole = \App\Models\Role::where('slug', 'user')->first();
+        if ($userRole) {
+            $user->roles()->sync([$userRole->id]);
+        }
+
+        // Отправка (используем Laravel Notification)
+        $user->notify(new \App\Notifications\VerifyEmailNotification($code));
+
+        Auth::login($user);
+
+        return redirect('/verify')->with('status', 'Пожалуйста, проверьте вашу электронную почту для получения кода подтверждения.');
+    }
 }
