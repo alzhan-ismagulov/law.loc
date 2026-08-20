@@ -263,6 +263,46 @@ body {
     margin-right: 15px;
 }
 
+/* Стили для адаптации bootstrap пагинации под Nova CRM */
+.pagination {
+    display: flex;
+    padding-left: 0;
+    list-style: none;
+    gap: 4px;
+    margin: 0;
+}
+
+.pagination .page-item .page-link {
+    position: relative;
+    display: block;
+    padding: 6px 12px;
+    font-size: 14px;
+    color: #334155;
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+.pagination .page-item.active .page-link {
+    z-index: 3;
+    color: #ffffff;
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #94a3b8;
+    pointer-events: none;
+    background-color: #f8fafc;
+    border-color: #e2e8f0;
+}
+
+.pagination .page-item .page-link:hover {
+    background-color: #f8fafc;
+    color: #3b82f6;
+}
+
 /* Медиа-запрос для мобильных устройств (экраны меньше 768px) */
 @media (max-width: 767px) {
     .nova-layout {

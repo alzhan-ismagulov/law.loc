@@ -38,6 +38,16 @@
             </tbody>
         </table>
     </div>
+
+   <!-- Блок пагинации -->
+<div style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px;">
+    <div style="color: #64748b; font-size: 14px;">
+        Показано с {{ $regions->firstItem() ?? 0 }} по {{ $regions->lastItem() ?? 0 }} из {{ $regions->total() }} записей
+    </div>
+    <div>
+        {{ $regions->links('pagination::bootstrap-4') }}
+    </div>
+</div>
 </div>
 
 <div id="deleteModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">

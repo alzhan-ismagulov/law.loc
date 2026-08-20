@@ -9,6 +9,10 @@ use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\RegionController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/', function () {
+    return view('welcome');
+});
+
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
