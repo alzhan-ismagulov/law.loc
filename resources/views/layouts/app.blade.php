@@ -19,6 +19,8 @@
             <div class="sidebar-brand">
                 <a href="{{ route('admin.dashboard') }}" class="brand-link">Legal Core</a>
             </div>
+
+            <button type="button" class="nova-mobile-toggle" onclick="document.querySelector('.nova-sidebar').classList.toggle('open')">☰</button>
             
             <nav class="sidebar-nav">
                 <a href="{{ route('admin.dashboard') }}" class="nav-link">

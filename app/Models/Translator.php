@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Translator extends Model
+class Translator extends Authenticatable
 {
     protected $fillable = [
         'name',
+        'country',
         'photo_path',
         'region_id',
         'city',
@@ -21,9 +22,12 @@ class Translator extends Model
         'phone',
         'messengers',
         'email',
+        'password',
         'status',
         'internal_notes',
     ];
+
+    protected $hidden = ['password'];
 
     protected $casts = [
         'messengers' => 'array',

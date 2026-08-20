@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
             RegionSeeder::class,
             LanguageSeeder::class,
             RoleSeeder::class,
+            CurrencySeeder::class,
+            CountrySeeder::class,
         ]);
 
         // Находим роли

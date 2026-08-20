@@ -346,5 +346,6 @@ body {
     .nova-card-table {
         padding: 15px !important;
         min-width: 100% !important;
+        width: 100% !important;
     }
 }

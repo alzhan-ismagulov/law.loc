@@ -26,7 +26,7 @@
         </thead>
         <tbody>
     @foreach($translators as $translator)
-        <tr style="border-bottom: 1px solid #f1f5f9; font-size: 14px; color: #06172a;">
+        <tr style="border-bottom: 1px solid #f1f5f9; font-size: 14px; color: #06172a; cursor: pointer;" onclick="window.location.href='{{ route('admin.translators.show', $translator->id) }}'">
             <td style="padding: 10px;">{{ $translator->id }}</td>
             <td style="padding: 10px; font-weight: 500;">{{ $translator->name }}</td>
             <td style="padding: 10px; color: #64748b;">{{ $translator->city }}</td>
@@ -38,10 +38,7 @@
                     <span style="background-color: #f1f5f9; color: #64748b; padding: 3px 8px; border-radius: 4px; font-size: 12px;">не работает</span>
                 @endif
             </td>
-            <td style="padding: 10px; text-align: right;">
-                <!-- Кнопка перехода к ценам -->
-                <a href="{{ route('admin.translators.show', $translator->id) }}" style="color: #10b981; text-decoration: none; margin-right: 15px; font-size: 14px;">Цены</a>
-                
+            <td style="padding: 10px; text-align: right;" onclick="event.stopPropagation();">
                 <!-- Кнопка редактирования -->
                 <a href="{{ route('admin.translators.edit', $translator->id) }}" style="color: #3b82f6; text-decoration: none; margin-right: 15px; font-size: 14px;">Изменить</a>
                 

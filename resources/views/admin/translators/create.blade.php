@@ -26,13 +26,36 @@
             <div style="font-weight: 600; margin-bottom: 15px;">Основная информация</div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                 <input type="text" name="name" class="nova-input" placeholder="ФИО переводчика" value="{{ old('name') }}" required>
-                <select name="region_id" class="nova-input" required>
-                    <option value="">Выберите регион</option>
-                    @foreach($regions as $r)<option value="{{ $r->id }}" {{ old('region_id') == $r->id ? 'selected' : '' }}>{{ $r->title }}</option>@endforeach
+                
+                <select name="country" id="countrySelect" class="nova-input" onchange="toggleRegions()" required>
+                    @foreach($countries as $country)
+                        <option value="{{ $country->title }}" {{ old('country', 'Казахстан') == $country->title ? 'selected' : '' }}>{{ $country->title }}</option>
+                    @endforeach
                 </select>
+
+                <!-- Обертка для динамического скрытия регионов -->
+                <div id="regionContainer">
+                    <select name="region_id" class="nova-input" style="width: 100%;">
+                        <option value="">Выберите регион</option>
+                        @foreach($regions as $r)
+                            <option value="{{ $r->id }}" {{ old('region_id') == $r->id ? 'selected' : '' }}>{{ $r->title }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
                 <input type="text" name="city" class="nova-input" placeholder="Город" value="{{ old('city') }}" required>
-                <input type="text" name="phone" class="nova-input" placeholder="Телефон" value="{{ old('phone') }}" required>
-                <input type="email" name="email" class="nova-input" placeholder="Email" value="{{ old('email') }}" required>
+                
+                <!-- Адрес перенесен наверх -->
+                <input type="text" name="address" class="nova-input" placeholder="Адрес" value="{{ old('address') }}">
+                
+                <!-- Телефон с маской -->
+                <input type="text" name="phone" id="phoneInput" class="nova-input" placeholder="+7 (777) 123-45-67" value="{{ old('phone') }}" required>
+                
+                <input type="email" name="email" class="nova-input" placeholder="Email" value="" required>
+                
+                <!-- Пароль для входа -->
+                <input type="password" name="password" class="nova-input" placeholder="Пароль для входа" required>
+
                 <div>
                     <label style="font-size: 12px; color: #64748b;">Фотография:</label>
                     <input type="file" name="photo" class="nova-input" accept="image/*">
@@ -45,15 +68,20 @@
         <div class="nova-card-table" style="padding: 20px; border: 1px solid #e2e8f0; margin-bottom: 20px;">
             <div style="font-weight: 600; margin-bottom: 15px;">Реквизиты и документы</div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                <input type="text" name="card_number" class="nova-input" placeholder="Номер карты" value="{{ old('card_number') }}">
+                <!-- Номер карты с исправленным плейсхолдером -->
+                <input type="text" name="card_number" id="cardInput" class="nova-input" placeholder="Номер карты" value="{{ old('card_number') }}">
+                
                 <input type="text" name="card_type" class="nova-input" placeholder="Тип карты (Visa/MasterCard)" value="{{ old('card_type') }}">
                 <input type="text" name="bank_name" class="nova-input" placeholder="Банк" value="{{ old('bank_name') }}">
-                <input type="text" name="iban" class="nova-input" placeholder="IBAN" value="{{ old('iban') }}">
-                <input type="text" name="address" class="nova-input" placeholder="Адрес" value="{{ old('address') }}">
+                
+                <!-- IBAN ограничение в 20 символов -->
+                <input type="text" name="iban" class="nova-input" placeholder="IBAN (20 символов)" maxlength="20" value="{{ old('iban') }}">
+                
                 <div>
                     <label style="font-size: 12px; color: #64748b;">Файл диплома:</label>
                     <input type="file" name="diploma" class="nova-input" accept=".pdf,.jpg,.png">
                 </div>
+                
                 <select name="status" class="nova-input">
                     <option value="active">Работает</option>
                     <option value="inactive">Не работает</option>
@@ -76,6 +104,31 @@
 
 <script>
 let pairIndex = 0;
+
+function toggleRegions() {
+    const country = document.getElementById('countrySelect').value;
+    const container = document.getElementById('regionContainer');
+    if (country === 'Казахстан') {
+        container.style.display = 'block';
+    } else {
+        container.style.display = 'none';
+        container.querySelector('select').value = '';
+    }
+}
+
+// Маска для телефона (+7 ...)
+document.getElementById('phoneInput').addEventListener('input', function (e) {
+    let x = e.target.value.replace(/\D/g, '').match(/(\d{0,1})(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/);
+    if (!x[2]) { e.target.value = '+7'; return; }
+    e.target.value = '+7 (' + x[2] + (x[3] ? ') ' + x[3] : '') + (x[4] ? '-' + x[4] : '') + (x[5] ? '-' + x[5] : '');
+});
+
+// Маска для номера карты (4 блока по 4 цифры)
+document.getElementById('cardInput').addEventListener('input', function (e) {
+    let v = e.target.value.replace(/\D/g, '').substring(0, 16);
+    e.target.value = v != '' ? v.match(/.{1,4}/g).join(' ') : '';
+});
+
 function addLanguagePair() {
     const container = document.getElementById('language-pairs-container');
     const html = `
@@ -83,20 +136,28 @@ function addLanguagePair() {
         <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;">
             <select name="pairs[${pairIndex}][source]" class="nova-input" required style="flex: 1; min-width: 140px; box-sizing: border-box;">
                 <option value="">Исходный язык</option>
-                @foreach($languages as $l)<option value="{{$l->id}}">{{$l->title}}</option>@endforeach
+                @foreach($languages as $l)
+                    <option value="{{ $l->id }}">{{ $l->title }}</option>
+                @endforeach
             </select>
             <select name="pairs[${pairIndex}][target]" class="nova-input" required style="flex: 1; min-width: 140px; box-sizing: border-box;">
                 <option value="">Целевой язык</option>
-                @foreach($languages as $l)<option value="{{$l->id}}">{{$l->title}}</option>@endforeach
+                @foreach($languages as $l)
+                    <option value="{{ $l->id }}">{{ $l->title }}</option>
+                @endforeach
             </select>
-            <input type="text" name="pairs[${pairIndex}][currency]" class="nova-input" placeholder="Валюта (KZT)" style="width: 120px; box-sizing: border-box;" required>
+            <select name="pairs[${pairIndex}][currency]" class="nova-input" style="width: 140px; box-sizing: border-box;" required>
+                @foreach($currencies as $c)
+                    <option value="{{ $c->code }}">{{ $c->code }}</option>
+                @endforeach
+            </select>
         </div>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px;">
-            <input type="number" step="0.01" name="pairs[${pairIndex}][written_price_1800]" class="nova-input" placeholder="Письм. 1800" style="box-sizing: border-box;" required>
-            <input type="number" step="0.01" name="pairs[${pairIndex}][consecutive_price_hour]" class="nova-input" placeholder="Устный час" style="box-sizing: border-box;" required>
-            <input type="number" step="0.01" name="pairs[${pairIndex}][simultaneous_price_hour]" class="nova-input" placeholder="Синхрон" style="box-sizing: border-box;" required>
-            <input type="number" step="0.01" name="pairs[${pairIndex}][notarial_fee]" class="nova-input" placeholder="Нотариус" style="box-sizing: border-box;" required>
-            <input type="number" step="0.01" name="pairs[${pairIndex}][editing_price_1800]" class="nova-input" placeholder="Редактура" style="box-sizing: border-box;" required>
+            <input type="number" step="0.01" name="pairs[${pairIndex}][written_price_1800]" class="nova-input" placeholder="За 1800 знаков с пробелами" style="box-sizing: border-box;">
+            <input type="number" step="0.01" name="pairs[${pairIndex}][consecutive_price_hour]" class="nova-input" placeholder="Устный перевод/час" style="box-sizing: border-box;">
+            <input type="number" step="0.01" name="pairs[${pairIndex}][simultaneous_price_hour]" class="nova-input" placeholder="Синхронный перевод/час" style="box-sizing: border-box;">
+            <input type="number" step="0.01" name="pairs[${pairIndex}][notarial_fee]" class="nova-input" placeholder="За нотариальное заверение" style="box-sizing: border-box;">
+            <input type="number" step="0.01" name="pairs[${pairIndex}][editing_price_1800]" class="nova-input" placeholder="За редактуру" style="box-sizing: border-box;">
         </div>
     </div>`;
     container.insertAdjacentHTML('beforeend', html);
@@ -104,6 +165,7 @@ function addLanguagePair() {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
+    toggleRegions();
     addLanguagePair();
 });
 </script>

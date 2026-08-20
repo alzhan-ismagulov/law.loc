@@ -8,9 +8,12 @@ use App\Models\TranslatorLanguagePair;
 use App\Models\TranslatorPriceHistory;
 use App\Models\Region;
 use App\Models\Language;
+use App\Models\Country;
+use App\Models\Currency;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class TranslatorController extends Controller
 {
@@ -24,14 +27,18 @@ class TranslatorController extends Controller
     {
         $regions = Region::all();
         $languages = Language::all();
-        return view('admin.translators.create', compact('regions', 'languages'));
+        $currencies = Currency::all();
+        $countries = Country::all();
+        
+        return view('admin.translators.create', compact('regions', 'languages', 'currencies', 'countries'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'region_id' => 'required|integer',
+            'country' => 'required|string|max:255',
+            'region_id' => 'nullable|integer',
             'city' => 'required|string|max:255',
             'address' => 'nullable|string|max:255',
             'card_number' => 'nullable|string|max:50',
@@ -41,6 +48,7 @@ class TranslatorController extends Controller
             'phone' => 'required|string|max:20',
             'messengers' => 'nullable|string',
             'email' => 'required|email|unique:translators,email',
+            'password' => 'required|string|min:6',
             'status' => 'required|string|in:active,inactive',
             'internal_notes' => 'nullable|string',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -49,16 +57,17 @@ class TranslatorController extends Controller
             'pairs.*.source' => 'required_with:pairs|integer',
             'pairs.*.target' => 'required_with:pairs|integer',
             'pairs.*.currency' => 'required_with:pairs|string|max:10',
-            'pairs.*.written_price_1800' => 'required_with:pairs|numeric',
-            'pairs.*.consecutive_price_hour' => 'required_with:pairs|numeric',
-            'pairs.*.simultaneous_price_hour' => 'required_with:pairs|numeric',
-            'pairs.*.notarial_fee' => 'required_with:pairs|numeric',
-            'pairs.*.editing_price_1800' => 'required_with:pairs|numeric',
+            'pairs.*.written_price_1800' => 'nullable|numeric',
+            'pairs.*.consecutive_price_hour' => 'nullable|numeric',
+            'pairs.*.simultaneous_price_hour' => 'nullable|numeric',
+            'pairs.*.notarial_fee' => 'nullable|numeric',
+            'pairs.*.editing_price_1800' => 'nullable|numeric',
         ]);
 
         DB::transaction(function () use ($request) {
             $data = $request->except(['photo', 'diploma', 'pairs']);
             $data['status'] = $request->status ?? 'active';
+            $data['password'] = Hash::make($request->password);
 
             if ($request->hasFile('photo')) {
                 $data['photo_path'] = $request->file('photo')->store('translators', 'public');
@@ -79,12 +88,12 @@ class TranslatorController extends Controller
 
                     TranslatorPriceHistory::create([
                         'language_pair_id' => $pair->id,
-                        'currency' => $pairData['currency'],
-                        'written_price_1800' => $pairData['written_price_1800'],
-                        'consecutive_price_hour' => $pairData['consecutive_price_hour'],
-                        'simultaneous_price_hour' => $pairData['simultaneous_price_hour'],
-                        'notarial_fee' => $pairData['notarial_fee'],
-                        'editing_price_1800' => $pairData['editing_price_1800'],
+                        'currency' => $pairData['currency'] ?? 'KZT',
+                        'written_price_1800' => $pairData['written_price_1800'] ?? null,
+                        'consecutive_price_hour' => $pairData['consecutive_price_hour'] ?? null,
+                        'simultaneous_price_hour' => $pairData['simultaneous_price_hour'] ?? null,
+                        'notarial_fee' => $pairData['notarial_fee'] ?? null,
+                        'editing_price_1800' => $pairData['editing_price_1800'] ?? null,
                         'effective_from' => now(),
                     ]);
                 }
@@ -103,14 +112,21 @@ class TranslatorController extends Controller
     public function edit(Translator $translator)
     {
         $regions = Region::all();
-        return view('admin.translators.edit', compact('translator', 'regions'));
+        $countries = Country::all();
+        $languages = Language::all();
+        $currencies = Currency::all();
+        
+        $translator->load('languagePairs.prices');
+
+        return view('admin.translators.edit', compact('translator', 'regions', 'countries', 'languages', 'currencies'));
     }
 
     public function update(Request $request, Translator $translator)
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'region_id' => 'required|integer',
+            'country' => 'required|string|max:255',
+            'region_id' => 'nullable|integer',
             'city' => 'required|string|max:255',
             'address' => 'nullable|string|max:255',
             'card_number' => 'nullable|string|max:50',
@@ -124,23 +140,76 @@ class TranslatorController extends Controller
             'internal_notes' => 'nullable|string',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'diploma' => 'nullable|file|mimes:pdf,jpg,png|max:5120',
+            'existing_pairs' => 'nullable|array',
+            'pairs' => 'nullable|array',
         ]);
 
-        if ($request->hasFile('photo')) {
-            if ($translator->photo_path) {
-                Storage::disk('public')->delete($translator->photo_path);
+        DB::transaction(function () use ($request, $translator) {
+            $data = $request->except(['photo', 'diploma', 'existing_pairs', 'pairs', 'password']);
+            
+            if ($request->filled('password')) {
+                $data['password'] = Hash::make($request->password);
             }
-            $data['photo_path'] = $request->file('photo')->store('translators', 'public');
-        }
 
-        if ($request->hasFile('diploma')) {
-            if ($translator->diploma_path) {
-                Storage::disk('public')->delete($translator->diploma_path);
+            if ($request->hasFile('photo')) {
+                if ($translator->photo_path) {
+                    Storage::disk('public')->delete($translator->photo_path);
+                }
+                $data['photo_path'] = $request->file('photo')->store('translators', 'public');
             }
-            $data['diploma_path'] = $request->file('diploma')->store('translators/diplomas', 'public');
-        }
 
-        $translator->update($data);
+            if ($request->hasFile('diploma')) {
+                if ($translator->diploma_path) {
+                    Storage::disk('public')->delete($translator->diploma_path);
+                }
+                $data['diploma_path'] = $request->file('diploma')->store('translators/diplomas', 'public');
+            }
+
+            $translator->update($data);
+
+            // Обновление цен существующих пар (создаем новую запись в истории цен)
+            if ($request->has('existing_pairs')) {
+                foreach ($request->existing_pairs as $pairId => $pairData) {
+                    $pair = TranslatorLanguagePair::find($pairId);
+                    if ($pair && $pair->translator_id == $translator->id) {
+                        TranslatorPriceHistory::create([
+                            'language_pair_id' => $pair->id,
+                            'currency' => $pairData['currency'] ?? 'KZT',
+                            'written_price_1800' => $pairData['written_price_1800'] ?? null,
+                            'consecutive_price_hour' => $pairData['consecutive_price_hour'] ?? null,
+                            'simultaneous_price_hour' => $pairData['simultaneous_price_hour'] ?? null,
+                            'notarial_fee' => $pairData['notarial_fee'] ?? null,
+                            'editing_price_1800' => $pairData['editing_price_1800'] ?? null,
+                            'effective_from' => $pairData['effective_from'] ?? now(),
+                        ]);
+                    }
+                }
+            }
+
+            // Добавление новых пар
+            if ($request->has('pairs')) {
+                foreach ($request->pairs as $pairData) {
+                    if (!empty($pairData['source']) && !empty($pairData['target'])) {
+                        $pair = TranslatorLanguagePair::create([
+                            'translator_id' => $translator->id,
+                            'source_language_id' => $pairData['source'],
+                            'target_language_id' => $pairData['target'],
+                        ]);
+
+                        TranslatorPriceHistory::create([
+                            'language_pair_id' => $pair->id,
+                            'currency' => $pairData['currency'] ?? 'KZT',
+                            'written_price_1800' => $pairData['written_price_1800'] ?? null,
+                            'consecutive_price_hour' => $pairData['consecutive_price_hour'] ?? null,
+                            'simultaneous_price_hour' => $pairData['simultaneous_price_hour'] ?? null,
+                            'notarial_fee' => $pairData['notarial_fee'] ?? null,
+                            'editing_price_1800' => $pairData['editing_price_1800'] ?? null,
+                            'effective_from' => $pairData['effective_from'] ?? now(),
+                        ]);
+                    }
+                }
+            }
+        });
 
         return redirect()->route('admin.translators.index')->with('success', 'Данные успешно обновлены.');
     }
@@ -180,11 +249,11 @@ class TranslatorController extends Controller
     {
         $data = $request->validate([
             'currency' => 'required|string|max:10',
-            'written_price_1800' => 'required|numeric',
-            'consecutive_price_hour' => 'required|numeric',
-            'simultaneous_price_hour' => 'required|numeric',
-            'notarial_fee' => 'required|numeric',
-            'editing_price_1800' => 'required|numeric',
+            'written_price_1800' => 'nullable|numeric',
+            'consecutive_price_hour' => 'nullable|numeric',
+            'simultaneous_price_hour' => 'nullable|numeric',
+            'notarial_fee' => 'nullable|numeric',
+            'editing_price_1800' => 'nullable|numeric',
             'effective_from' => 'required|date',
         ]);
 

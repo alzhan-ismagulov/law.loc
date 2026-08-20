@@ -42,6 +42,11 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'translator' => [
+            'driver' => 'session',
+            'provider' => 'translators',
+        ],
     ],
 
     /*
@@ -65,6 +70,11 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', User::class),
+        ],
+
+        'translators' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Translator::class,
         ],
 
         // 'users' => [

@@ -20,10 +20,16 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+        if (Auth::guard('web')->attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
 
             return redirect()->intended('/admin');
+        }
+
+        if (Auth::guard('translator')->attempt($credentials, $request->boolean('remember'))) {
+            $request->session()->regenerate();
+
+            return redirect()->intended('/translator/dashboard');
         }
 
         return back()->withErrors([
@@ -33,7 +39,11 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::logout();
+        if (Auth::guard('translator')->check()) {
+            Auth::guard('translator')->logout();
+        } else {
+            Auth::guard('web')->logout();
+        }
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
@@ -63,14 +73,11 @@ class AuthController extends Controller
             'verification_code' => $code,
         ]);
         
-
-        // Присваиваем роль обычного пользователя (user)
         $userRole = \App\Models\Role::where('slug', 'user')->first();
         if ($userRole) {
             $user->roles()->sync([$userRole->id]);
         }
 
-        // Отправка (используем Laravel Notification)
         $user->notify(new \App\Notifications\VerifyEmailNotification($code));
 
         Auth::login($user);

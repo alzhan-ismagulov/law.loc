@@ -12,8 +12,9 @@ return new class extends Migration
         Schema::create('translators', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('photo_path')->nullable(); // Добавлено поле фото
-            $table->unsignedBigInteger('region_id');
+            $table->string('country')->default('Казахстан');
+            $table->string('photo_path')->nullable();
+            $table->unsignedBigInteger('region_id')->nullable();
             $table->string('city');
             $table->string('address')->nullable();
             $table->string('diploma_path')->nullable();
@@ -24,6 +25,7 @@ return new class extends Migration
             $table->string('phone');
             $table->json('messengers')->nullable();
             $table->string('email')->unique();
+            $table->string('password');
             $table->string('status')->default('active');
             $table->text('internal_notes')->nullable();
             $table->timestamps();
@@ -43,11 +45,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('language_pair_id')->constrained('translator_language_pairs')->onDelete('cascade');
             $table->string('currency', 10);
-            $table->decimal('written_price_1800', 12, 2)->default(0.00);
-            $table->decimal('consecutive_price_hour', 12, 2)->default(0.00);
-            $table->decimal('simultaneous_price_hour', 12, 2)->default(0.00);
-            $table->decimal('notarial_fee', 12, 2)->default(0.00);
-            $table->decimal('editing_price_1800', 12, 2)->default(0.00);
+            $table->decimal('written_price_1800', 12, 2)->nullable();
+            $table->decimal('consecutive_price_hour', 12, 2)->nullable();
+            $table->decimal('simultaneous_price_hour', 12, 2)->nullable();
+            $table->decimal('notarial_fee', 12, 2)->nullable();
+            $table->decimal('editing_price_1800', 12, 2)->nullable();
             $table->date('effective_from');
             $table->timestamps();
         });

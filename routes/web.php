@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\RegionController;
 use App\Http\Controllers\Admin\LanguageController;
 use App\Http\Controllers\Admin\TranslatorController;
+use App\Http\Controllers\Translator\DashboardController as TranslatorDashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\UserDashboardController;
@@ -32,6 +33,15 @@ Route::get('/dashboard', [UserDashboardController::class, 'index'])
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// Маршруты дашборда переводчика
+Route::prefix('translator')->name('translator.')->middleware(['auth:translator'])->group(function () {
+   Route::get('/dashboard', [TranslatorDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/orders', [TranslatorDashboardController::class, 'orders'])->name('orders');
+    Route::get('/prices', [TranslatorDashboardController::class, 'prices'])->name('prices');
+    Route::put('/prices/{pair}', [TranslatorDashboardController::class, 'updatePrice'])->name('prices.update');
+    Route::get('/profile', [TranslatorDashboardController::class, 'profile'])->name('profile');
+});
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin,lawyer'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
