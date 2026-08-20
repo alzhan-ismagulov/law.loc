@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\RegionController;
+use App\Http\Controllers\Admin\LanguageController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -23,4 +24,5 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('/posts/upload-image', [PostController::class, 'uploadImage'])->name('posts.upload-image');
     Route::resource('clients', ClientController::class);
     Route::resource('regions', RegionController::class);
+    Route::resource('languages', LanguageController::class);
 });

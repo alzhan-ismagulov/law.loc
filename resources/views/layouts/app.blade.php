@@ -74,7 +74,7 @@
                 <a href="#" class="nav-link footer-link">
                     <span class="nav-icon">&#9632;</span> Сроки
                 </a>
-                <a href="#" class="nav-link">
+                <a href="{{ route('admin.languages.index') }}" class="nav-link">
                     <span class="nav-icon">&#9632;</span> Список языков
                 </a>
             </div>
