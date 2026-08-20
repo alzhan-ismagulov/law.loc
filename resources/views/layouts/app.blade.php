@@ -17,12 +17,24 @@
     <div class="nova-layout">
         <aside class="nova-sidebar" id="novaSidebar">
             <div class="sidebar-brand">
-                <a href="{{ route('admin.dashboard') }}" class="brand-link">Zanger CRM</a>
+                <a href="{{ route('admin.dashboard') }}" class="brand-link">Legal Core</a>
             </div>
             
             <nav class="sidebar-nav">
                 <a href="{{ route('admin.dashboard') }}" class="nav-link">
                     <span class="nav-icon">&#9632;</span> Главная
+                </a>
+
+                <div class="sidebar-footer-title" style="padding-top: 15px;">СПРАВОЧНИКИ</div>
+                <a href="{{ route('admin.clients.index') }}" class="nav-link" style="margin-top: 10px;">
+                    <span class="nav-icon">&#9632;</span> Клиенты
+                </a>
+                
+
+                <!-- Контент (Блог) -->
+                <div class="sidebar-footer-title" style="padding-top: 15px;">БЛОГ</div>
+                <a href="{{ route('admin.posts.index') }}" class="nav-link">
+                    <span class="nav-icon">&#9632;</span> Посты
                 </a>
                 <a href="{{ route('admin.categories.index') }}" class="nav-link">
                     <span class="nav-icon">&#9632;</span> Категории
@@ -30,30 +42,40 @@
                 <a href="{{ route('admin.tags.index') }}" class="nav-link">
                     <span class="nav-icon">&#9632;</span> Теги
                 </a>
-                <a href="{{ route('admin.posts.index') }}" class="nav-link">
-                    <span class="nav-icon">&#9632;</span> Посты
-                </a>
-                <a href="{{ route('admin.clients.index') }}" class="nav-link">
-                    <span class="nav-icon">&#9632;</span> Клиенты
-                </a>
+
+                <!-- Юридическое направление -->
+                <div class="sidebar-footer-title" style="padding-top: 15px;">ЮРИДИЧЕСКИЙ ОТДЕЛ</div>
                 <a href="#" class="nav-link">
                     <span class="nav-icon">&#9632;</span> Делопроизводство
                 </a>
+
+                <!-- Переводческое направление -->
+                <div class="sidebar-footer-title" style="padding-top: 15px;">ПЕРЕВОДЧЕСКОЕ БЮРО</div>
                 <a href="#" class="nav-link">
-                    <span class="nav-icon">&#9632;</span> Документы
+                    <span class="nav-icon">&#9632;</span> Переводчики
                 </a>
+
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">&#9632;</span> Заказы на перевод
+                </a>
+
+                <!-- Управление -->
+                <div class="sidebar-footer-title" style="padding-top: 15px;">УПРАВЛЕНИЕ</div>
                 <a href="#" class="nav-link">
                     <span class="nav-icon">&#9632;</span> Настройки
                 </a>
             </nav>
 
             <div class="sidebar-footer">
-                <div class="sidebar-footer-title">Справочники</div>
+                <div class="sidebar-footer-title">СПРАВОЧНИКИ</div>
                 <a href="{{ route('admin.regions.index') }}" class="nav-link footer-link">
                     <span class="nav-icon">&#9632;</span> Регионы
                 </a>
                 <a href="#" class="nav-link footer-link">
                     <span class="nav-icon">&#9632;</span> Сроки
+                </a>
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">&#9632;</span> Список языков
                 </a>
             </div>
         </aside>
