@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\PostController;
 // use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\RegionController;
 use App\Http\Controllers\Admin\LanguageController;
+use App\Http\Controllers\Admin\TranslatorController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\UserDashboardController;
@@ -32,7 +33,7 @@ Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:superadmin,lawyer'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin,lawyer'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('categories', CategoryController::class);
@@ -43,4 +44,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:superadmin,law
     // Route::resource('clients', ClientController::class);
     Route::resource('regions', RegionController::class);
     Route::resource('languages', LanguageController::class);
+
+    // Управление переводчиками
+    Route::resource('translators', TranslatorController::class);
+    Route::post('translators/{translator}/add-pair', [TranslatorController::class, 'addLanguagePair'])->name('translators.add-pair');
+    Route::post('translators/pair/{pair}/update-price', [TranslatorController::class, 'updatePrice'])->name('translators.update-price');
 });
