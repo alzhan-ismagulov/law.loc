@@ -9,12 +9,23 @@ use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\RegionController;
 use App\Http\Controllers\Admin\LanguageController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\UserDashboardController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::get('/dashboard', [UserDashboardController::class, 'index'])
+    ->name('user.dashboard')
+    ->middleware('auth');
+
+// Маршруты авторизации
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:superadmin,lawyer'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('categories', CategoryController::class);

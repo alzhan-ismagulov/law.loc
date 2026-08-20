@@ -92,14 +92,25 @@
                 </div>
 
                 <div class="header-user-menu">
-                    <div class="user-dropdown-toggle">
-                        Администратор &#9662;
-                    </div>
-                    <div class="user-dropdown-content">
-                        <a href="#" class="dropdown-item">Профиль</a>
-                        <a href="#" class="dropdown-item">Выйти</a>
-                    </div>
-                </div>
+    <div class="user-dropdown-toggle">
+        {{ auth()->user()->name ?? 'Пользователь' }} 
+        <span style="font-size: 11px; opacity: 0.8; font-weight: normal;">
+            @if(auth()->user() && auth()->user()->roles->isNotEmpty())
+                ({{ auth()->user()->roles->pluck('title')->implode(', ') }})
+            @else
+                (Гость)
+            @endif
+        </span>
+        &#9662;
+    </div>
+    <div class="user-dropdown-content">
+        <a href="#" class="dropdown-item">Профиль</a>
+        <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
+            @csrf
+            <button type="submit" class="dropdown-item" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer; padding: 8px 16px; font: inherit; color: inherit;">Выйти</button>
+        </form>
+    </div>
+</div>
             </header>
 
             <div class="nova-content">
