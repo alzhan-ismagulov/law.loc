@@ -10,25 +10,34 @@ return new class extends Migration
     {
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
-            $table->string('type', 20)->default('individual'); // Физическое лицо (individual) или Юридическое лицо (company)
+            $table->string('type')->default('individual'); // individual / company
+            $table->string('name'); // Имя физлица или Название компании
+            $table->string('bin_iin')->nullable(); // БИН для компаний или ИИН для физлиц
+            $table->string('country')->default('Казахстан');
+            $table->unsignedBigInteger('region_id')->nullable();
+            $table->string('city');
+            $table->string('address')->nullable();
             
-            // Основные данные (для физлица или представителя)
-            $table->string('name', 255); // Полное ФИО или Название ТОО
-            $table->string('iin_bin', 12)->unique(); // ИИН (12 цифр) или БИН для ТОО
-            $table->string('phone', 20)->nullable();
-            $table->string('email', 255)->nullable();
+            // Только для юрлиц
+            $table->string('contact_person')->nullable(); // Ответственное лицо
+            $table->string('position')->nullable(); // Должность
             
-            // Паспортные данные (если физлицо)
-            $table->date('birth_date')->nullable();
-            $table->string('address', 500)->nullable(); // Адрес по прописке
-            $table->string('id_card_number', 20)->nullable(); // № Удостоверения / Паспорта
-            $table->date('id_card_date')->nullable(); // Дата выдачи
-            $table->string('id_card_issuer', 255)->nullable(); // Кем выдано
+            // Контакты и авторизация для личного кабинета
+            $table->string('phone');
+            $table->string('email')->unique();
+            $table->string('password'); // Пароль для входа в личный кабинет
             
-            // Системные связи
-            $table->foreignId('tenant_id')->constrained('tenants')->cascadeOnDelete(); // Чей клиент (какой юрфирмы)
-            $table->foreignId('region_id')->nullable()->constrained('regions'); // Регион
+            // CRM-параметры
+            $table->string('source')->nullable(); // Источник привлечения
+            $table->string('status')->default('active'); // active, lead, archive
+            $table->decimal('discount_percent', 5, 2)->default(0); // Персональная скидка %
             
+            // Реквизиты
+            $table->string('bank_name')->nullable();
+            $table->string('iban')->nullable();
+            
+            $table->text('internal_notes')->nullable();
+            $table->rememberToken();
             $table->timestamps();
         });
     }

@@ -49,5 +49,10 @@ class DatabaseSeeder extends Seeder
         if ($userRole) {
             $regularUser->roles()->sync([$userRole->id]);
         }
+
+        $this->call([
+            DepartmentsSeeder::class,
+        ]);
     }
+    
 }

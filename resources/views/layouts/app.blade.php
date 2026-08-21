@@ -27,9 +27,13 @@
                     <span class="nav-icon">&#9632;</span> Главная
                 </a>
 
-                <div class="sidebar-footer-title" style="padding-top: 15px;">СПРАВОЧНИКИ</div>
-               <a href="{{ route('admin.clients.index') }}" class="nav-link">
-                    <span class="nav-icon">&#9632;</span> Клиенты
+                <div class="sidebar-footer-title" style="padding-top: 15px;">ПОЛИГРАФИЯ</div>
+                <a href="{{ route('admin.poligraphy.purchases.index') }}" class="nav-link">
+                    <span class="nav-icon">&#9632;</span> Покупка
+                </a>
+
+                <a href="{{ route('admin.poligraphy.sales.index') }}" class="nav-link">
+                    <span class="nav-icon">&#9632;</span> Продажа
                 </a>
                 
 
@@ -52,7 +56,7 @@
                 </a>
 
                 <!-- Переводческое направление -->
-                <div class="sidebar-footer-title" style="padding-top: 15px;">ПЕРЕВОДЧЕСКОЕ БЮРО</div>
+                <div class="sidebar-footer-title" style="padding-top: 15px;">ПЕРЕВОДЫ</div>
                 <a href="{{ route('admin.translators.index') }}" class="nav-link">
                     <span class="nav-icon">&#9632;</span> Переводчики
                 </a>
@@ -70,14 +74,17 @@
 
             <div class="sidebar-footer">
                 <div class="sidebar-footer-title">СПРАВОЧНИКИ</div>
+                 <a href="{{ route('admin.clients.index') }}" class="nav-link">
+                            <span class="nav-icon">&#9632;</span> Клиенты
+                </a>
                 <a href="{{ route('admin.regions.index') }}" class="nav-link footer-link">
                     <span class="nav-icon">&#9632;</span> Регионы
                 </a>
-                <a href="#" class="nav-link footer-link">
-                    <span class="nav-icon">&#9632;</span> Сроки
+                <a href="{{ route('admin.nomenclatures.index') }}" class="nav-link footer-link">
+                    <span class="nav-icon">&#9632;</span> Номенклатура
                 </a>
                 <a href="{{ route('admin.languages.index') }}" class="nav-link">
-                    <span class="nav-icon">&#9632;</span> Список языков
+                    <span class="nav-icon">&#9632;</span> Языки
                 </a>
             </div>
         </aside>
