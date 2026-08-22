@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="nova-card-table" style="margin: 0 auto; padding: 30px; max-width: 900px;">
+<div class="nova-card-table" style="margin: 0 auto; padding: 30px; max-width: 800px;">
     
     @if(session('success'))
         <div style="background-color: #d1fae5; color: #065f46; padding: 12px; border-radius: 6px; margin-bottom: 20px; font-size: 14px;">
@@ -33,8 +33,8 @@
     </div>
 
     @if($nomenclature->type === 'item')
-        <!-- Блок спецификации (если это услуга) -->
-        @if($nomenclature->category_type === 'Услуги')
+        {{-- Блок спецификации показываем только для полиграфических услуг --}}
+        @if($nomenclature->category_type === 'Услуги' && $nomenclature->parent?->name === 'Полиграфические услуги')
             <div style="font-size: 16px; font-weight: 600; color: #0f172a; margin-bottom: 15px; margin-top: 30px;">Спецификация (расход материалов на 1 услугу)</div>
             
             <table class="nova-table" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">

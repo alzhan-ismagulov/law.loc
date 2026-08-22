@@ -37,4 +37,9 @@ class Translator extends Authenticatable
     {
         return $this->hasMany(TranslatorLanguagePair::class);
     }
+
+    public function rates()
+    {
+        return $this->hasMany(TranslatorNomenclatureRate::class);
+    }
 }

@@ -109,7 +109,9 @@ class NomenclatureController extends Controller
     {
         $validated = $request->validate([
             'parent_id' => 'nullable|exists:nomenclatures,id',
-            'name' => 'required|string|max:255',
+            'name' => 'nullable|string|max:255',
+            'title' => 'nullable|string|max:255',
+            'type' => 'nullable|in:folder,item',
             'category_type' => 'nullable|string|max:255',
             'base_unit' => 'nullable|string|max:50',
             'purchase_unit' => 'nullable|string|max:50',
@@ -119,13 +121,16 @@ class NomenclatureController extends Controller
             'effective_date' => 'nullable|date',
         ]);
 
+        $name = $validated['name'] ?? $validated['title'] ?? $nomenclature->name;
+
         $nomenclature->update([
-            'parent_id' => $validated['parent_id'],
-            'name' => $validated['name'],
+            'parent_id' => $validated['parent_id'] ?? $nomenclature->parent_id,
+            'name' => $name,
+            'type' => $validated['type'] ?? $nomenclature->type,
             'category_type' => $validated['category_type'] ?? $nomenclature->category_type,
             'base_unit' => $validated['base_unit'] ?? $nomenclature->base_unit,
-            'purchase_unit' => $validated['purchase_unit'] ?? null,
-            'conversion_factor' => $validated['conversion_factor'] ?? 1,
+            'purchase_unit' => $validated['purchase_unit'] ?? $nomenclature->purchase_unit,
+            'conversion_factor' => $validated['conversion_factor'] ?? $nomenclature->conversion_factor,
         ]);
 
         if ($nomenclature->type === 'item') {
@@ -135,8 +140,7 @@ class NomenclatureController extends Controller
             $newSelling = $validated['selling_price'] ?? 0;
             $newDate = $validated['effective_date'] ?? date('Y-m-d');
 
-            // Записываем новую цену в историю, если цены изменились или явно указана новая дата
-            if (!$currentPrice || $currentPrice->purchase_price != $newPurchase || $currentPrice->selling_price != $newSelling || ($request->filled('effective_date') && $currentPrice->effective_date->format('Y-m-d') != $newDate)) {
+            if (!$currentPrice || $currentPrice->purchase_price != $newPurchase || $currentPrice->selling_price != $newSelling || ($request->filled('effective_date') && optional($currentPrice->effective_date)->format('Y-m-d') != $newDate)) {
                 NomenclaturePrice::create([
                     'nomenclature_id' => $nomenclature->id,
                     'purchase_price' => $newPurchase,
@@ -170,7 +174,7 @@ class NomenclatureController extends Controller
         $nomenclature->bomItems()->create($validated);
 
         return redirect()->route('admin.nomenclatures.show', $nomenclature->id)
-            .with('success', 'Материал успешно добавлен в спецификацию.');
+            ->with('success', 'Материал успешно добавлен в спецификацию.');
     }
 
     // Удаление материала из спецификации
@@ -180,6 +184,6 @@ class NomenclatureController extends Controller
         $bom->delete();
 
         return redirect()->route('admin.nomenclatures.show', $parentId)
-            .with('success', 'Материал удален из спецификации.');
+            ->with('success', 'Материал удален из спецификации.');
     }
 }

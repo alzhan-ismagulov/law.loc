@@ -38,7 +38,7 @@ class PoligraphyController extends Controller
             'purchase_date' => $validated['purchase_date'],
         ]);
 
-        // Обновляем закупочную цену в истории цен номенклатуры (если цена за единицу закупки отличается, считаем цену за базовую или единицу)
+        // Обновляем закупочную цену в истории цен номенклатуры
         $nomenclature = Nomenclature::findOrFail($validated['nomenclature_id']);
         $factor = $nomenclature->conversion_factor > 0 ? $nomenclature->conversion_factor : 1;
         $unitPurchasePrice = $validated['purchase_price'] / $factor;
@@ -63,10 +63,12 @@ class PoligraphyController extends Controller
         $startDate = $request->get('start_date', date('Y-m-d'));
         $endDate = $request->get('end_date', date('Y-m-d'));
 
-        // Получаем услуги из папки "Полиграфические услуги" (или по категории Услуги)
+        // Получаем услуги строго из папки «Полиграфические услуги»
         $services = Nomenclature::with('currentPrice')
-            ->where('category_type', 'Услуги')
             ->where('type', 'item')
+            ->whereHas('parent', function ($query) {
+                $query->where('name', 'Полиграфические услуги');
+            })
             ->get();
 
         $orders = PoligraphyOrder::with('nomenclature')

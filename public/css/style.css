@@ -344,8 +344,12 @@ body {
     }
 
     .nova-card-table {
+        min-width: 600px; 
+        margin: 0 auto; 
+        padding: 30px;
         padding: 15px !important;
-        min-width: 100% !important;
-        width: 100% !important;
+        
+        /* min-width: 100% !important;
+        width: 100% !important; */
     }
 }

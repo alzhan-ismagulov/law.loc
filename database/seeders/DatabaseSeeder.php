@@ -51,7 +51,11 @@ class DatabaseSeeder extends Seeder
         }
 
         $this->call([
-            DepartmentsSeeder::class,
+            DepartmentSeeder::class,
+        ]);
+
+        $this->call([
+            NomenclatureSeeder::class,
         ]);
     }
     

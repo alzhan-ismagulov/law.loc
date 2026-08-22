@@ -20,16 +20,25 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
+        // 1. Проверяем администратора (web)
         if (Auth::guard('web')->attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
 
             return redirect()->intended('/admin');
         }
 
+        // 2. Проверяем переводчика (translator)
         if (Auth::guard('translator')->attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
 
             return redirect()->intended('/translator/dashboard');
+        }
+
+        // 3. Проверяем клиента (client) — ЭТОГО БЫЛО НЕ ХВАТАЕТ
+        if (Auth::guard('client')->attempt($credentials, $request->boolean('remember'))) {
+            $request->session()->regenerate();
+
+            return redirect()->intended('/client/dashboard');
         }
 
         return back()->withErrors([
@@ -41,6 +50,8 @@ class AuthController extends Controller
     {
         if (Auth::guard('translator')->check()) {
             Auth::guard('translator')->logout();
+        } elseif (Auth::guard('client')->check()) {
+            Auth::guard('client')->logout();
         } else {
             Auth::guard('web')->logout();
         }

@@ -28,6 +28,7 @@
                 </a>
 
                 <div class="sidebar-footer-title" style="padding-top: 15px;">ПОЛИГРАФИЯ</div>
+
                 <a href="{{ route('admin.poligraphy.purchases.index') }}" class="nav-link">
                     <span class="nav-icon">&#9632;</span> Покупка
                 </a>
@@ -52,16 +53,17 @@
                 <!-- Юридическое направление -->
                 <div class="sidebar-footer-title" style="padding-top: 15px;">ЮРИДИЧЕСКИЙ ОТДЕЛ</div>
                 <a href="#" class="nav-link">
-                    <span class="nav-icon">&#9632;</span> Делопроизводство
+                    <span class="nav-icon">&#9632;</span> Дела
                 </a>
 
                 <!-- Переводческое направление -->
                 <div class="sidebar-footer-title" style="padding-top: 15px;">ПЕРЕВОДЫ</div>
+
                 <a href="{{ route('admin.translators.index') }}" class="nav-link">
                     <span class="nav-icon">&#9632;</span> Переводчики
                 </a>
 
-                <a href="#" class="nav-link">
+                <a href="{{ route('admin.translations.index') }}" class="nav-link">
                     <span class="nav-icon">&#9632;</span> Заказы на перевод
                 </a>
 
@@ -76,6 +78,9 @@
                 <div class="sidebar-footer-title">СПРАВОЧНИКИ</div>
                  <a href="{{ route('admin.clients.index') }}" class="nav-link">
                             <span class="nav-icon">&#9632;</span> Клиенты
+                </a>
+                <a href="{{ route('admin.departments.index') }}" class="nav-link footer-link">
+                    <span class="nav-icon">&#9632;</span> Подразделения
                 </a>
                 <a href="{{ route('admin.regions.index') }}" class="nav-link footer-link">
                     <span class="nav-icon">&#9632;</span> Регионы

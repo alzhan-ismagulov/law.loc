@@ -4,41 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Личный кабинет клиента - Zanger CRM</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; margin: 0; color: #1e293b; }
-        .nova-card-table { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .table-header { font-size: 18px; font-weight: 600; color: #0f172a; }
-        .nova-input { border: 1px solid #cbd5e1; border-radius: 6px; outline: none; font-size: 14px; }
-        .nova-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
-        .nav-link { color: #475569; text-decoration: none; padding: 8px 12px; border-radius: 6px; font-size: 14px; font-weight: 500; display: inline-block; }
-        .nav-link:hover, .nav-link.active { background: #f1f5f9; color: #2563eb; }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
 <body>
-    <div style="display: flex; min-height: 100vh;">
-        <!-- Сайдбар -->
-        <div style="width: 260px; background: #ffffff; border-right: 1px solid #e2e8f0; padding: 20px; display: flex; flex-direction: column;">
-            <div style="font-size: 20px; font-weight: 700; color: #2563eb; margin-bottom: 30px; padding-left: 10px;">ZANGER CLIENT</div>
+    <div class="nova-layout">
+        <aside class="nova-sidebar" id="novaSidebar">
+            <div class="sidebar-brand">
+                <a href="{{ route('client.dashboard') }}" class="brand-link">LEGAL CORE CLIENT</a>
+            </div>
+
+            <button type="button" class="nova-mobile-toggle" onclick="document.querySelector('.nova-sidebar').classList.toggle('open')">☰</button>
             
-            <nav style="display: flex; flex-direction: column; gap: 5px; flex-grow: 1;">
-                <a href="{{ route('client.dashboard') }}" class="nav-link {{ request()->routeIs('client.dashboard') ? 'active' : '' }}">Главная</a>
-                <a href="{{ route('client.orders') }}" class="nav-link {{ request()->routeIs('client.orders') ? 'active' : '' }}">Мои заказы</a>
-                <a href="{{ route('client.profile') }}" class="nav-link {{ request()->routeIs('client.profile') ? 'active' : '' }}">Профиль</a>
+            <nav class="sidebar-nav">
+                <a href="{{ route('client.dashboard') }}" class="nav-link {{ request()->routeIs('client.dashboard') ? 'active' : '' }}">
+                    <span class="nav-icon">&#9632;</span> Главная
+                </a>
+
+                <div class="sidebar-footer-title" style="padding-top: 15px;">РАБОТА</div>
+
+                <a href="{{ route('client.orders') }}" class="nav-link {{ request()->routeIs('client.orders') ? 'active' : '' }}">
+                    <span class="nav-icon">&#9632;</span> Мои заказы
+                </a>
+
+                <a href="{{ route('client.profile') }}" class="nav-link {{ request()->routeIs('client.profile') ? 'active' : '' }}">
+                    <span class="nav-icon">&#9632;</span> Профиль
+                </a>
             </nav>
 
-            <div>
-                <form action="{{ route('logout') }}" method="POST">
+            <div class="sidebar-footer">
+                <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
                     @csrf
-                    <button type="submit" style="width: 100%; background: none; border: none; text-align: left; color: #ef4444; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500;">Выйти</button>
+                    <button type="submit" class="nav-link footer-link" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer; color: #ef4444; font: inherit;">Выйти</button>
                 </form>
             </div>
-        </div>
+        </aside>
 
-        <!-- Основной контент -->
-        <div style="flex-grow: 1; padding: 30px; overflow-y: auto;">
-            @yield('content')
-        </div>
+        <main class="nova-main">
+            <header class="nova-header">
+                <div class="header-left" style="display: flex; align-items: center;">
+                    <button type="button" class="nova-mobile-toggle" id-toggle="novaSidebar" onclick="toggleSidebar()">&#9776;</button>
+                    <a href="{{ route('client.dashboard') }}" class="header-dashboard-link">Личный кабинет</a>
+                </div>
+
+                <form action="{{ route('client.orders') }}" method="GET" class="header-search" style="margin: 0;">
+                    <input type="text" name="search" value="{{ request('search') }}" class="nova-input header-search-input" placeholder="Поиск по заказам...">
+                </form>
+
+                <div class="header-user-menu">
+                    <div class="user-dropdown-toggle">
+                        {{ auth()->user()->name ?? 'Клиент' }} 
+                        <span style="font-size: 11px; opacity: 0.8; font-weight: normal;">(Клиент)</span>
+                        &#9662;
+                    </div>
+                    <div class="user-dropdown-content">
+                        <a href="{{ route('client.profile') }}" class="dropdown-item">Профиль</a>
+                        <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
+                            @csrf
+                            <button type="submit" class="dropdown-item" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer; padding: 8px 16px; font: inherit; color: inherit;">Выйти</button>
+                        </form>
+                    </div>
+                </div>
+            </header>
+
+            <div class="nova-content">
+                @yield('content')
+            </div>
+
+            <footer class="nova-site-footer">
+                ТОО "Legal Core" &copy; 2026. Все права защищены.
+            </footer>
+        </main>
     </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('novaSidebar');
+            sidebar.classList.toggle('open');
+        }
+    </script>
 </body>
 </html>

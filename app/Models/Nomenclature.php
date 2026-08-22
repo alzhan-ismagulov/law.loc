@@ -17,7 +17,7 @@ class Nomenclature extends Model
         'name',
         'type',
         'category_type',
-        'department',
+        'department_id',
         'base_unit',
         'purchase_unit',
         'conversion_factor',

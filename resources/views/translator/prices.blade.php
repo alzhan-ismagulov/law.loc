@@ -27,34 +27,39 @@
                 @method('PUT')
                 <div style="font-weight: 500; margin-bottom: 10px; font-size: 14px; color: #334155;">Установить новый тариф</div>
                 
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px;">
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px;">
                     <div>
-                        <label style="font-size: 12px; color: #64748b;">Валюта</label>
-                        <input type="text" name="currency" value="{{ $latestPrice->currency ?? 'KZT' }}" class="nova-input" style="width: 100%; padding: 6px;" required>
+                        <label style="font-size: 12px; color: #64748b; display: block; margin-bottom: 4px;">Валюта</label>
+                        <select name="currency" class="nova-input" style="width: 100%; padding: 6px; background: #ffffff;">
+                            <option value="KZT" {{ (optional($latestPrice)->currency ?? 'KZT') == 'KZT' ? 'selected' : '' }}>KZT</option>
+                            <option value="USD" {{ optional($latestPrice)->currency == 'USD' ? 'selected' : '' }}>USD</option>
+                            <option value="EUR" {{ optional($latestPrice)->currency == 'EUR' ? 'selected' : '' }}>EUR</option>
+                            <option value="RUB" {{ optional($latestPrice)->currency == 'RUB' ? 'selected' : '' }}>RUB</option>
+                        </select>
                     </div>
                     <div>
-                        <label style="font-size: 12px; color: #64748b;">Письм. 1800 знаков</label>
+                        <label style="font-size: 12px; color: #64748b; display: block; margin-bottom: 4px;">Письм. 1800 знаков</label>
                         <input type="number" step="0.01" name="written_price_1800" value="{{ $latestPrice->written_price_1800 ?? '' }}" class="nova-input" style="width: 100%; padding: 6px;">
                     </div>
                     <div>
-                        <label style="font-size: 12px; color: #64748b;">Устный час</label>
+                        <label style="font-size: 12px; color: #64748b; display: block; margin-bottom: 4px;">Устный час</label>
                         <input type="number" step="0.01" name="consecutive_price_hour" value="{{ $latestPrice->consecutive_price_hour ?? '' }}" class="nova-input" style="width: 100%; padding: 6px;">
                     </div>
                     <div>
-                        <label style="font-size: 12px; color: #64748b;">Синхронный час</label>
+                        <label style="font-size: 12px; color: #64748b; display: block; margin-bottom: 4px;">Синхронный час</label>
                         <input type="number" step="0.01" name="simultaneous_price_hour" value="{{ $latestPrice->simultaneous_price_hour ?? '' }}" class="nova-input" style="width: 100%; padding: 6px;">
                     </div>
                     <div>
-                        <label style="font-size: 12px; color: #64748b;">Нотариус</label>
+                        <label style="font-size: 12px; color: #64748b; display: block; margin-bottom: 4px;">Нотариус</label>
                         <input type="number" step="0.01" name="notarial_fee" value="{{ $latestPrice->notarial_fee ?? '' }}" class="nova-input" style="width: 100%; padding: 6px;">
                     </div>
                     <div>
-                        <label style="font-size: 12px; color: #64748b;">Редактура 1800</label>
+                        <label style="font-size: 12px; color: #64748b; display: block; margin-bottom: 4px;">Редактура 1800</label>
                         <input type="number" step="0.01" name="editing_price_1800" value="{{ $latestPrice->editing_price_1800 ?? '' }}" class="nova-input" style="width: 100%; padding: 6px;">
                     </div>
                 </div>
                 <input type="hidden" name="effective_from" value="{{ date('Y-m-d') }}">
-                <button type="submit" class="nova-input" style="background: #3b82f6; color: white; border: none; padding: 6px 15px; cursor: pointer; border-radius: 4px; font-size: 13px;">Сохранить новый тариф</button>
+                <button type="submit" class="nova-input" style="background: #3b82f6; color: white; border: none; padding: 8px 20px; cursor: pointer; border-radius: 4px; font-size: 13px; white-space: nowrap;">Сохранить новый тариф</button>
             </form>
 
             <!-- История цен -->
